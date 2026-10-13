@@ -19,6 +19,7 @@ defaults:
 jobs:
   # ---------------------------------------------------------------------------
   # Lint — ruff (fast Python linter, replaces flake8 + isort)
+  # Always runs as long as requirements.txt exists.
   # ---------------------------------------------------------------------------
   lint:
     name: Lint (ruff)
@@ -36,11 +37,23 @@ jobs:
       - name: Install ruff
         run: pip install ruff==0.4.4
 
+      - name: Check if there is Python source to lint
+        id: check_src
+        run: |
+          if [ -d "src" ]; then
+            echo "has_src=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_src=false" >> $GITHUB_OUTPUT
+            echo "No src/ directory yet — skipping lint."
+          fi
+
       - name: Run ruff
+        if: steps.check_src.outputs.has_src == 'true'
         run: ruff check . --config pyproject.toml
 
   # ---------------------------------------------------------------------------
   # Type check — mypy
+  # Only runs when src/ exists (added in PR-01+).
   # ---------------------------------------------------------------------------
   type-check:
     name: Type check (mypy)
@@ -58,11 +71,23 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt mypy==1.10.0
 
+      - name: Check if there is Python source to type-check
+        id: check_src
+        run: |
+          if [ -d "src" ]; then
+            echo "has_src=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_src=false" >> $GITHUB_OUTPUT
+            echo "No src/ directory yet — skipping mypy."
+          fi
+
       - name: Run mypy
+        if: steps.check_src.outputs.has_src == 'true'
         run: mypy src/ --config-file pyproject.toml
 
   # ---------------------------------------------------------------------------
-  # Import check — confirm the app loads without errors
+  # Import check — confirm the app loads without errors.
+  # Only runs when main.py exists (added in PR-01+).
   # ---------------------------------------------------------------------------
   import-check:
     name: Import check
@@ -80,5 +105,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Check if main.py exists
+        id: check_main
+        run: |
+          if [ -f "main.py" ]; then
+            echo "has_main=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_main=false" >> $GITHUB_OUTPUT
+            echo "No main.py yet — skipping import check."
+          fi
+
       - name: Check app imports cleanly
+        if: steps.check_main.outputs.has_main == 'true'
         run: python -c "from main import app; print('Import OK')"
