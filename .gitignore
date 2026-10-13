@@ -7,6 +7,7 @@ __pycache__/
 *.pyo
 .Python
 .venv/
+bac
 venv/
 env/
 .env
@@ -60,6 +61,7 @@ vendor
 *.env*
 .air*
 /tmp
-*.pem
 apikey.txt
+# Ignore loose text files but not requirements.txt or similar project files
+*.log.txty.txt
 *.txt
