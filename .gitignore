@@ -7,7 +7,6 @@ __pycache__/
 *.pyo
 .Python
 .venv/
-bac
 venv/
 env/
 .env
@@ -24,7 +23,6 @@ coverage.xml
 # =============================================================================
 # Go
 # =============================================================================
-# Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
@@ -53,7 +51,6 @@ coverage.xml
 # Dependencies
 /vendor/
 vendor/
-vendor
 /Godeps/
 /assets
 
@@ -62,6 +59,3 @@ vendor
 .air*
 /tmp
 apikey.txt
-# Ignore loose text files but not requirements.txt or similar project files
-*.log.txty.txt
-*.txt
