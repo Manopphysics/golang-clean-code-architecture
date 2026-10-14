@@ -1,0 +1,22 @@
+# Web framework
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+
+# Database — PostgreSQL (async)
+sqlalchemy==2.0.30
+asyncpg==0.29.0
+alembic==1.13.1
+
+# Database — MongoDB (async)
+motor==3.4.0
+
+# Auth & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Config
+pydantic-settings==2.2.1
+python-dotenv==1.0.1
+
+# Utilities
+email-validator==2.1.1

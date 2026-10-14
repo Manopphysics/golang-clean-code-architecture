@@ -1,4 +1,28 @@
-# Binaries for programs and plugins
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.Python
+.venv/
+venv/
+env/
+.env
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# =============================================================================
+# Go
+# =============================================================================
 *.exe
 *.exe~
 *.dll
@@ -27,7 +51,6 @@
 # Dependencies
 /vendor/
 vendor/
-vendor
 /Godeps/
 /assets
 
@@ -35,6 +58,4 @@ vendor
 *.env*
 .air*
 /tmp
-*.pem
 apikey.txt
-*.txt
