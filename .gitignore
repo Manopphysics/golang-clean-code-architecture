@@ -55,7 +55,9 @@ vendor/
 /assets
 
 # Customs
-*.env*
+.env
+.env.*
+!.env.example
 .air*
 /tmp
 apikey.txt
