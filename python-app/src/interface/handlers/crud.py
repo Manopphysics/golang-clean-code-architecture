@@ -9,6 +9,7 @@ Routes (all under /api/v1/data, all require JWT):
   GET /{slug}/{id}      → retrieve
 """
 from fastapi import APIRouter, Depends, Query, Request, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infrastructure.database.postgres import get_session
 from src.infrastructure.server.dependencies import get_crud_usecase
@@ -30,7 +31,7 @@ router = APIRouter(
 async def describe(
     entity_model_slug: str,
     usecase: ICRUDUsecase = Depends(get_crud_usecase),
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> dict:  # type: ignore[type-arg]
     """
     Return the Avro-like schema for a registered entity model slug.
@@ -55,7 +56,7 @@ async def retrieve_list(
     _page: int = Query(default=1, ge=1, alias="_page"),
     _pageSize: int = Query(default=10, ge=1, le=1000, alias="_pageSize"),
     usecase: ICRUDUsecase = Depends(get_crud_usecase),
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> dict:  # type: ignore[type-arg]
     """
     Paginated list of records for a given entity model slug.
@@ -86,7 +87,7 @@ async def retrieve(
     record_id: str,
     request: Request,
     usecase: ICRUDUsecase = Depends(get_crud_usecase),
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> dict:  # type: ignore[type-arg]
     """
     Fetch a single record by id for a given entity model slug.
