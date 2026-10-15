@@ -9,6 +9,7 @@ alembic==1.13.1
 
 # Database — MongoDB (async)
 motor==3.4.0
+pymongo==4.7.3
 
 # Auth & Security
 python-jose[cryptography]==3.3.0
