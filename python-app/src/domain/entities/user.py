@@ -3,7 +3,8 @@ User domain entities (pure data — no DB dependencies).
 
 Mirrors Go:
   src/domain/entities/user/user.go     — UserEntity, UserTokenEntity, UserTokenClaimsEntity
-  src/domain/entities/user/request.go  — UserRegisterRequest, UserLoginRequest, UserRefreshTokenRequest
+  src/domain/entities/user/request.go  — UserRegisterRequest, UserLoginRequest,
+                                         UserRefreshTokenRequest
   src/domain/entities/user/response.go — UserLoginResponse
 """
 import re

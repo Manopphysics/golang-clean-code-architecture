@@ -1,3 +1,3 @@
-from .user import Base, UserModel, UserTokenModel, UserPermissionModel
+from .user import Base, UserModel, UserPermissionModel, UserTokenModel
 
 __all__ = ["Base", "UserModel", "UserTokenModel", "UserPermissionModel"]
