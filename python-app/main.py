@@ -8,6 +8,7 @@ Run with:
     cd python-app
     uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 """
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -15,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.config import get_settings
 from src.infrastructure.database.mongodb import close_mongo
+from src.infrastructure.server.modules import register_routes
 
 settings = get_settings()
 
@@ -24,8 +26,8 @@ settings = get_settings()
 # Mirrors Go's graceful shutdown via os.Interrupt signal handler.
 # ---------------------------------------------------------------------------
 @asynccontextmanager
-async def lifespan(app: FastAPI):  # type: ignore[type-arg]
-    # startup — nothing to do yet (SQLAlchemy pool is lazy)
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    # startup — SQLAlchemy pool is lazy, nothing to do
     yield
     # shutdown — close MongoDB client cleanly
     await close_mongo()
@@ -37,7 +39,11 @@ async def lifespan(app: FastAPI):  # type: ignore[type-arg]
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="Python (FastAPI) rewrite of the Golang Clean Architecture template.",
+    description=(
+        "Python (FastAPI) rewrite of the Golang Clean Architecture template. "
+        "Implements the same clean architecture layers: domain, use cases, "
+        "interface adapters, and infrastructure."
+    ),
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
@@ -55,8 +61,6 @@ app.add_middleware(
 )
 
 # ---------------------------------------------------------------------------
-# Health-check — placeholder until PR-07 wires the real monitor handler
+# Routes — mirrors Go's module factory in server.Start()
 # ---------------------------------------------------------------------------
-@app.get("/api/v1/", tags=["Monitor"])
-async def health_check() -> dict[str, str]:
-    return {"name": settings.app_name, "version": settings.app_version}
+register_routes(app)
