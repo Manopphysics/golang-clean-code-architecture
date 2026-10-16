@@ -6,7 +6,7 @@ Mirrors Go: src/interface/repositories/postgres/user/userRepository.go
 All 9 methods from the interface are implemented here using
 SQLAlchemy 2.0 async queries.
 """
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,8 +14,8 @@ from src.domain.entities.user import UserEntity, UserLoginResponse, UserRegister
 from src.domain.models.user import UserModel, UserPermissionModel, UserTokenModel
 from src.domain.repositories.user import IUserRepository
 
-# bcrypt context — cost factor 10 matches Go's bcrypt.GenerateFromPassword(..., 10)
-_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=10)
+# bcrypt cost factor 10 — matches Go's bcrypt.GenerateFromPassword(..., 10)
+_BCRYPT_ROUNDS = 10
 
 
 class PostgresUserRepository(IUserRepository):
@@ -37,7 +37,7 @@ class PostgresUserRepository(IUserRepository):
         Bcrypt-hash a plain-text password.
         Mirrors Go's BcryptHashing() in UserRegisterRequest.
         """
-        return _pwd_context.hash(plain)
+        return bcrypt.hashpw(plain.encode(), bcrypt.gensalt(rounds=_BCRYPT_ROUNDS)).decode()
 
     @staticmethod
     def verify_password(plain: str, hashed: str) -> bool:
@@ -45,7 +45,7 @@ class PostgresUserRepository(IUserRepository):
         Verify a plain password against a bcrypt hash.
         Mirrors Go's bcrypt.CompareHashAndPassword().
         """
-        return _pwd_context.verify(plain, hashed)
+        return bcrypt.checkpw(plain.encode(), hashed.encode())
 
     # ------------------------------------------------------------------
     # IUserRepository — 9 methods
