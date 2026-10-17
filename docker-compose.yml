@@ -61,6 +61,21 @@ services:
     # Override CMD for development hot-reload
     # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
+  # ---------------------------------------------------------------------------
+  # React Frontend (Vite)
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+    depends_on:
+      - python-app
+
 volumes:
   postgres_data:
   mongo_data:

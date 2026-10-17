@@ -37,6 +37,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy application source
 COPY . .
 
+# Make entrypoint executable (before changing user)
+RUN chmod +x /app/entrypoint.sh
+
 # Non-root user for security
 RUN adduser --disabled-password --gecos "" appuser \
     && chown -R appuser:appuser /app
@@ -44,5 +47,4 @@ USER appuser
 
 EXPOSE 8000
 
-# Start with uvicorn; override CMD in docker-compose for dev (--reload)
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["/app/entrypoint.sh"]

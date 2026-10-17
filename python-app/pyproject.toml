@@ -24,3 +24,23 @@ strict = false
 ignore_missing_imports = true
 disallow_untyped_defs = true
 warn_return_any = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "--cov=src --cov-report=term-missing --cov-report=html --cov-fail-under=75"
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "src/infrastructure/database/*",  # DB connectors (require live DBs)
+    "src/config/__init__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+    "raise NotImplementedError",
+]

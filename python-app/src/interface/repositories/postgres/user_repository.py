@@ -9,6 +9,7 @@ SQLAlchemy 2.0 async queries.
 import bcrypt
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from src.domain.entities.user import UserEntity, UserLoginResponse, UserRegisterRequest
 from src.domain.models.user import UserModel, UserPermissionModel, UserTokenModel
@@ -143,7 +144,7 @@ class PostgresUserRepository(IUserRepository):
         result = await self._session.execute(
             select(UserTokenModel)
             .where(UserTokenModel.user_id == user_id)
-            .join(UserTokenModel.user)  # eager-load the user relationship
+            .options(selectinload(UserTokenModel.user))  # eager-load the user relationship
         )
         return result.scalars().first()
 
@@ -161,7 +162,7 @@ class PostgresUserRepository(IUserRepository):
                 UserTokenModel.user_id == user_id,
                 UserTokenModel.access == access_token,
             )
-            .join(UserTokenModel.user)
+            .options(selectinload(UserTokenModel.user))  # eager-load the user relationship
         )
         return result.scalars().first()
 
