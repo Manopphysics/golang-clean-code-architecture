@@ -1,6 +1,5 @@
 """Tests for src/shared/authentication/jwt.py."""
 from datetime import UTC, datetime, timedelta
-from unittest.mock import patch
 
 import pytest
 from jose import jwt as jose_jwt
@@ -14,7 +13,6 @@ from src.shared.authentication.jwt import (
     parse_token,
     repeat_token,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

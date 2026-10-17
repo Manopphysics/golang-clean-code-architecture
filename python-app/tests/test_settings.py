@@ -1,5 +1,4 @@
 """Tests for src/config/settings.py — Settings and get_settings()."""
-import pytest
 
 
 class TestSettings:

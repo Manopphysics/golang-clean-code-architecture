@@ -1,11 +1,9 @@
 """Integration tests for user HTTP handlers (mocked usecase)."""
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock
 
 import pytest
 
-from src.domain.entities.user import UserEntity, UserLoginResponse, UserTokenEntity
-
+from src.domain.entities.user import UserEntity
 
 # ---------------------------------------------------------------------------
 # Helpers

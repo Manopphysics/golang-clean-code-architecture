@@ -1,9 +1,9 @@
 """Tests for src/shared/crud/schema_generator.py."""
 import pytest
+from sqlalchemy import types as sa_types
 
 from src.domain.models.user import UserModel, UserPermissionModel, UserTokenModel
 from src.shared.crud.schema_generator import _sa_type_to_avro, generate_avro_schema
-from sqlalchemy import types as sa_types
 
 
 class TestGenerateAvroSchema:

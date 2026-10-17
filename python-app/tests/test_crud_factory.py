@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src.interface.repositories.crud_factory import get_crud_repository, get_registered_slugs
-from src.interface.repositories.postgres.crud_repository import PostgresCRUDRepository
 from src.interface.repositories.mongodb.crud_repository import MongoDBCRUDRepository
+from src.interface.repositories.postgres.crud_repository import PostgresCRUDRepository
 
 
 class TestGetRegisteredSlugs:

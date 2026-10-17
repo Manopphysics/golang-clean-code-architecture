@@ -1,6 +1,5 @@
 """Integration tests for CRUD HTTP handlers (mocked usecase + jwt_auth)."""
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock
 
 import pytest
 

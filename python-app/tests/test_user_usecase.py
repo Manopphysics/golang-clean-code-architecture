@@ -1,6 +1,6 @@
 """Tests for src/usecases/user_usecase.py — all 6 methods, all branches."""
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -10,11 +10,9 @@ from src.domain.entities.user import (
     UserLoginResponse,
     UserRefreshTokenRequest,
     UserRegisterRequest,
-    UserTokenEntity,
 )
 from src.domain.models.user import UserModel, UserPermissionModel, UserTokenModel
 from src.usecases.user_usecase import UserUsecase
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -161,10 +159,12 @@ class TestUserLogout:
 
     @pytest.mark.asyncio
     async def test_expired_token_raises(self, mock_user_repo):
-        from jose import jwt as jose_jwt
         from datetime import timedelta
-        from src.shared.authentication.jwt import ALGORITHM, AUDIENCES
+
+        from jose import jwt as jose_jwt
+
         from src.config import get_settings
+        from src.shared.authentication.jwt import ALGORITHM, AUDIENCES
         secret = get_settings().secret_key
         expired = jose_jwt.encode(
             {
