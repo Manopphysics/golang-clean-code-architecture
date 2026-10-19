@@ -37,8 +37,11 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy application source
 COPY . .
 
-# Make entrypoint executable (before changing user)
-RUN chmod +x /app/entrypoint.sh
+# Fix line endings (Windows CRLF → Unix LF) and make entrypoint executable
+RUN apt-get update && apt-get install -y --no-install-recommends dos2unix \
+    && dos2unix /app/entrypoint.sh \
+    && chmod +x /app/entrypoint.sh \
+    && rm -rf /var/lib/apt/lists/*
 
 # Non-root user for security
 RUN adduser --disabled-password --gecos "" appuser \
