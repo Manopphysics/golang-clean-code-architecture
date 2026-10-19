@@ -107,7 +107,7 @@ class UserTokenModel(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(
         BigInteger,
-        ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE"),
+        ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"),
         nullable=False,
     )
     access: Mapped[str] = mapped_column(String, nullable=False, server_default="")
@@ -141,7 +141,7 @@ class UserPermissionModel(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(
         BigInteger,
-        ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE"),
+        ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"),
         nullable=False,
     )
     permission: Mapped[str] = mapped_column(String, nullable=False, server_default="")

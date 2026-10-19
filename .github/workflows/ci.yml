@@ -118,3 +118,44 @@ jobs:
       - name: Check app imports cleanly
         if: steps.check_main.outputs.has_main == 'true'
         run: python -c "from main import app; print('Import OK')"
+
+  # ---------------------------------------------------------------------------
+  # Tests — pytest with coverage
+  # Only runs when tests/ directory exists.
+  # ---------------------------------------------------------------------------
+  test:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: python-app/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check if tests exist
+        id: check_tests
+        run: |
+          if [ -d "tests" ]; then
+            echo "has_tests=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_tests=false" >> $GITHUB_OUTPUT
+            echo "No tests/ directory yet — skipping pytest."
+          fi
+
+      - name: Run pytest
+        if: steps.check_tests.outputs.has_tests == 'true'
+        env:
+          APP_NAME: "Test App"
+          SECRET_KEY: "testsecret1234567890"
+          JWT_ACCESS_EXPIRES: "3600"
+          JWT_REFRESH_EXPIRES: "7200"
+          POSTGRES_DB_HOST: "localhost"
+          MONGODB_ATLAS_URI: "mongodb://localhost:27017"
+        run: pytest --override-ini="addopts=--cov=src --cov-report=term-missing --cov-fail-under=75"

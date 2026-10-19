@@ -64,6 +64,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
+    redirect_slashes=True,
     description=(
         "## Python (FastAPI) Clean Architecture API\n\n"
         "A faithful Python rewrite of the "
