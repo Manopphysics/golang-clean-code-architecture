@@ -14,7 +14,7 @@ from sqlalchemy.orm import selectinload
 from src.domain.entities.user import UserEntity, UserLoginResponse, UserRegisterRequest
 from src.domain.models.user import UserModel, UserPermissionModel, UserTokenModel
 from src.domain.repositories.user import IUserRepository
-from src.shared.password import hash_password, verify_password
+from src.shared.password import hash_password
 
 
 class PostgresUserRepository(IUserRepository):
@@ -45,9 +45,9 @@ class PostgresUserRepository(IUserRepository):
         self._session.add(user)
         try:
             await self._session.flush()   # populate auto-generated id + timestamps
-        except IntegrityError:
+        except IntegrityError as err:
             await self._session.rollback()
-            raise ValueError(f"email '{request.email}' is already registered")
+            raise ValueError(f"email '{request.email}' is already registered") from err
         await self._session.refresh(user)
         return user.to_entity()
 
