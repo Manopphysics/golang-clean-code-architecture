@@ -22,13 +22,13 @@ from src.domain.entities.user import (
 )
 from src.domain.models.user import UserPermissionModel
 from src.domain.repositories.user import IUserRepository
-from src.interface.repositories.postgres.user_repository import PostgresUserRepository
 from src.shared.authentication.jwt import (
     create_access_token,
     create_refresh_token,
     parse_token,
     repeat_token,
 )
+from src.shared.password import verify_password
 
 # ---------------------------------------------------------------------------
 # Interface
@@ -139,10 +139,8 @@ class UserUsecase(IUserUsecase):
         """
         user_model = await self._repo.get_user_by_email(request.email)
 
-        # Verify password — repository exposes the static helper
-        if not PostgresUserRepository.verify_password(
-            request.password, user_model.password
-        ):
+        # Verify password against bcrypt hash
+        if not verify_password(request.password, user_model.password):
             raise ValueError("password is invalid")
 
         access = create_access_token(user_model.id)

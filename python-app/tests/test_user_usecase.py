@@ -87,7 +87,7 @@ class TestUserLogin:
         mock_user_repo.upsert_oauth.return_value = None
 
         with patch(
-            "src.usecases.user_usecase.PostgresUserRepository.verify_password",
+            "src.usecases.user_usecase.verify_password",
             return_value=True,
         ), patch(
             "src.usecases.user_usecase.create_access_token",
@@ -116,7 +116,7 @@ class TestUserLogin:
     async def test_wrong_password_raises(self, mock_user_repo):
         mock_user_repo.get_user_by_email.return_value = _make_user_model()
         with patch(
-            "src.usecases.user_usecase.PostgresUserRepository.verify_password",
+            "src.usecases.user_usecase.verify_password",
             return_value=False,
         ):
             usecase = UserUsecase(mock_user_repo)
@@ -129,7 +129,7 @@ class TestUserLogin:
         mock_user_repo.get_user_by_email.return_value = _make_user_model()
         mock_user_repo.upsert_oauth.return_value = None
         with patch(
-            "src.usecases.user_usecase.PostgresUserRepository.verify_password",
+            "src.usecases.user_usecase.verify_password",
             return_value=True,
         ), patch("src.usecases.user_usecase.create_access_token", return_value="a"), \
            patch("src.usecases.user_usecase.create_refresh_token", return_value="r"):

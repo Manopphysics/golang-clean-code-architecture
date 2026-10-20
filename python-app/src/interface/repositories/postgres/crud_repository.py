@@ -9,7 +9,7 @@ in the CRUD model registry.
 import math
 from typing import Any
 
-from sqlalchemy import func, select, text
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 
@@ -40,8 +40,8 @@ class PostgresCRUDRepository(ICRUDRepository):
         """
         result = await self._session.execute(
             select(self._model).where(
-                text(f"{self._model.__tablename__}.id = :id")  # type: ignore[attr-defined]
-            ).params(id=int(record_id))
+                self._model.id == int(record_id)  # type: ignore[attr-defined]
+            )
         )
         row = result.scalars().first()
         if row is None:
@@ -76,9 +76,9 @@ class PostgresCRUDRepository(ICRUDRepository):
         total_data = count_result.scalar() or 0
         total_page = math.ceil(total_data / page_size) if total_data else 1
 
-        # Paginated rows
+        # Paginated rows — ordered by id for deterministic pagination
         rows_result = await self._session.execute(
-            select(self._model).offset(offset).limit(page_size)
+            select(self._model).order_by(self._model.id).offset(offset).limit(page_size)  # type: ignore[attr-defined]
         )
         rows = rows_result.scalars().all()
 
@@ -116,8 +116,8 @@ class PostgresCRUDRepository(ICRUDRepository):
         """
         result = await self._session.execute(
             select(self._model).where(
-                text(f"{self._model.__tablename__}.id = :id")  # type: ignore[attr-defined]
-            ).params(id=int(record_id))
+                self._model.id == int(record_id)  # type: ignore[attr-defined]
+            )
         )
         instance = result.scalars().first()
         if instance is None:
@@ -167,8 +167,8 @@ class PostgresCRUDRepository(ICRUDRepository):
         """
         result = await self._session.execute(
             select(self._model).where(
-                text(f"{self._model.__tablename__}.id = :id")  # type: ignore[attr-defined]
-            ).params(id=int(record_id))
+                self._model.id == int(record_id)  # type: ignore[attr-defined]
+            )
         )
         instance = result.scalars().first()
         if instance:
