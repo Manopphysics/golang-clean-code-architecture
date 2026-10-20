@@ -78,7 +78,7 @@ class PostgresCRUDRepository(ICRUDRepository):
 
         # Paginated rows — ordered by id for deterministic pagination
         rows_result = await self._session.execute(
-            select(self._model).order_by(self._model.id).offset(offset).limit(page_size)
+            select(self._model).order_by(self._model.id).offset(offset).limit(page_size)  # type: ignore[attr-defined]
         )
         rows = rows_result.scalars().all()
 
