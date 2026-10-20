@@ -6,17 +6,15 @@ Mirrors Go: src/interface/repositories/postgres/user/userRepository.go
 All 9 methods from the interface are implemented here using
 SQLAlchemy 2.0 async queries.
 """
-import bcrypt
 from sqlalchemy import delete, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from src.domain.entities.user import UserEntity, UserLoginResponse, UserRegisterRequest
 from src.domain.models.user import UserModel, UserPermissionModel, UserTokenModel
 from src.domain.repositories.user import IUserRepository
-
-# bcrypt cost factor 10 — matches Go's bcrypt.GenerateFromPassword(..., 10)
-_BCRYPT_ROUNDS = 10
+from src.shared.password import hash_password, verify_password
 
 
 class PostgresUserRepository(IUserRepository):
@@ -29,26 +27,6 @@ class PostgresUserRepository(IUserRepository):
         self._session = session
 
     # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
-
-    @staticmethod
-    def hash_password(plain: str) -> str:
-        """
-        Bcrypt-hash a plain-text password.
-        Mirrors Go's BcryptHashing() in UserRegisterRequest.
-        """
-        return bcrypt.hashpw(plain.encode(), bcrypt.gensalt(rounds=_BCRYPT_ROUNDS)).decode()
-
-    @staticmethod
-    def verify_password(plain: str, hashed: str) -> bool:
-        """
-        Verify a plain password against a bcrypt hash.
-        Mirrors Go's bcrypt.CompareHashAndPassword().
-        """
-        return bcrypt.checkpw(plain.encode(), hashed.encode())
-
-    # ------------------------------------------------------------------
     # IUserRepository — 9 methods
     # ------------------------------------------------------------------
 
@@ -57,7 +35,7 @@ class PostgresUserRepository(IUserRepository):
         Hash the password then insert a new user row.
         Mirrors Go's InsertUser().
         """
-        hashed = self.hash_password(request.password)
+        hashed = hash_password(request.password)
         user = UserModel(
             email=request.email,
             first_name=request.first_name,
@@ -65,7 +43,11 @@ class PostgresUserRepository(IUserRepository):
             password=hashed,
         )
         self._session.add(user)
-        await self._session.flush()   # populate auto-generated id + timestamps
+        try:
+            await self._session.flush()   # populate auto-generated id + timestamps
+        except IntegrityError:
+            await self._session.rollback()
+            raise ValueError(f"email '{request.email}' is already registered")
         await self._session.refresh(user)
         return user.to_entity()
 

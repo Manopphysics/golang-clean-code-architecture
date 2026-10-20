@@ -1,12 +1,13 @@
 /**
  * API client — thin wrapper around fetch that targets the FastAPI backend.
  *
- * In local dev (npm run dev): Vite proxies /api → http://localhost:8000/api
- * In Docker (static build):  VITE_API_BASE_URL must be set at build time,
- *   e.g. VITE_API_BASE_URL=http://localhost:8000
+ * The browser always calls the backend directly on port 8000.
+ * In local dev (npm run dev) the Vite proxy forwards /api → localhost:8000,
+ * so relative URLs work there too. In Docker, the browser hits localhost:8000
+ * directly (the python-app container is mapped to host port 8000).
  */
 
-const BASE = `${import.meta.env.VITE_API_BASE_URL ?? ''}/api/v1`
+const BASE = 'http://localhost:8000/api/v1'
 
 export interface UserEntity {
   id: number

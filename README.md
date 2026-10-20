@@ -54,7 +54,7 @@ Both implementations follow Uncle Bob's **Clean Architecture** with four distinc
 | **ORM** | GORM v1.25 (pgx v5) | SQLAlchemy 2.0 async (asyncpg) |
 | **MongoDB** | mongo-driver v1.12 | Motor 3.4 (async) |
 | **JWT** | golang-jwt/jwt v5 (HS256) | python-jose[cryptography] (HS256) |
-| **Password hashing** | bcrypt cost 10 | passlib/bcrypt cost 10 |
+| **Password hashing** | bcrypt cost 10 | bcrypt (direct, cost 10) |
 | **Config** | koanf v2 (dotenv + env overlay) | pydantic-settings (dotenv + env overlay) |
 | **API Docs** | swaggo (manual annotations) | FastAPI auto-generated OpenAPI |
 | **Migrations** | GORM AutoMigrate | Alembic (explicit, versioned) |
