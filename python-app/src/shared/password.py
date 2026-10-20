@@ -14,7 +14,8 @@ def hash_password(plain: str) -> str:
     Bcrypt-hash a plain-text password.
     Mirrors Go's BcryptHashing() in UserRegisterRequest.
     """
-    return bcrypt.hashpw(plain.encode(), bcrypt.gensalt(rounds=BCRYPT_ROUNDS)).decode()
+    hashed: bytes = bcrypt.hashpw(plain.encode(), bcrypt.gensalt(rounds=BCRYPT_ROUNDS))
+    return hashed.decode()
 
 
 def verify_password(plain: str, hashed: str) -> bool:
@@ -22,4 +23,5 @@ def verify_password(plain: str, hashed: str) -> bool:
     Verify a plain password against a bcrypt hash.
     Mirrors Go's bcrypt.CompareHashAndPassword().
     """
-    return bcrypt.checkpw(plain.encode(), hashed.encode())
+    result: bool = bcrypt.checkpw(plain.encode(), hashed.encode())
+    return result
