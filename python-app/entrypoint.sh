@@ -1,23 +1,20 @@
 #!/bin/bash
 set -e
 
-# Wait for PostgreSQL to be ready
-echo "Waiting for PostgreSQL to be ready..."
-echo "Trying to connect to: $POSTGRES_DB_HOST:$POSTGRES_DB_PORT as $POSTGRES_DB_USER"
+# Wait for PostgreSQL to be ready using bash TCP check (no extra packages needed)
+echo "Waiting for PostgreSQL to be ready at $POSTGRES_DB_HOST:$POSTGRES_DB_PORT..."
 
 max_attempts=30
 attempt=1
 
 while [ $attempt -le $max_attempts ]; do
-  if PGPASSWORD="$POSTGRES_DB_PASSWORD" psql -h "$POSTGRES_DB_HOST" -p "$POSTGRES_DB_PORT" -U "$POSTGRES_DB_USER" -d "$POSTGRES_DB_NAME" -c "SELECT 1" >/dev/null 2>&1; then
-    echo "PostgreSQL is ready!"
+  if timeout 2 bash -c "cat < /dev/null > /dev/tcp/$POSTGRES_DB_HOST/$POSTGRES_DB_PORT" 2>/dev/null; then
+    echo "PostgreSQL port is open!"
     break
   fi
   
   if [ $attempt -eq $max_attempts ]; then
     echo "ERROR: PostgreSQL failed to start after $max_attempts attempts"
-    echo "DEBUG: Last connection attempt output:"
-    PGPASSWORD="$POSTGRES_DB_PASSWORD" psql -h "$POSTGRES_DB_HOST" -p "$POSTGRES_DB_PORT" -U "$POSTGRES_DB_USER" -d "$POSTGRES_DB_NAME" -c "SELECT 1"
     exit 1
   fi
   

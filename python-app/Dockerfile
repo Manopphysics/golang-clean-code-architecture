@@ -37,11 +37,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy application source
 COPY . .
 
-# Install postgresql-client for wait-for-db script
+# Install runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-client \
-    dos2unix \
-    && dos2unix /app/entrypoint.sh \
     && chmod +x /app/entrypoint.sh \
     && rm -rf /var/lib/apt/lists/*
 
