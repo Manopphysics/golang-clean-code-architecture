@@ -63,13 +63,15 @@ services:
       - "8000:8000"
     env_file:
       - ./python-app/.env
+    environment:
+      - POSTGRES_DB_HOST=db
+      - POSTGRES_DB_PORT=5432
+      - MONGODB_ATLAS_URI=mongodb://root:golang-first-api@mongodb:27017/?authMechanism=SCRAM-SHA-1&authSource=admin
     depends_on:
       db:
         condition: service_healthy
       mongodb:
         condition: service_healthy
-    # Override CMD for development hot-reload
-    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   # ---------------------------------------------------------------------------
   # React Frontend (Vite)
