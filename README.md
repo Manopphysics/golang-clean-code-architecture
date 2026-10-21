@@ -145,11 +145,9 @@ That's it. On first boot:
 | React Frontend | http://localhost:3000 |
 | Python API | http://localhost:8000 |
 | Swagger UI | http://localhost:8000/docs |
-| ReDoc | http://localhost:8000/redoc |
 | PostgreSQL | localhost:5432 |
 | MongoDB | localhost:27017 |
-
-> **Note:** The original Go API is not started by docker-compose. To run it, follow the Go setup below.
+> **Note:** The original Go API is NOT started by docker-compose. To run it, follow the Go setup below.
 
 ---
 
