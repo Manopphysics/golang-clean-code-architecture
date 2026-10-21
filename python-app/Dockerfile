@@ -37,8 +37,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy application source
 COPY . .
 
-# Fix line endings (Windows CRLF → Unix LF) and make entrypoint executable
-RUN apt-get update && apt-get install -y --no-install-recommends dos2unix \
+# Install postgresql-client for wait-for-db script
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-client \
+    dos2unix \
     && dos2unix /app/entrypoint.sh \
     && chmod +x /app/entrypoint.sh \
     && rm -rf /var/lib/apt/lists/*
